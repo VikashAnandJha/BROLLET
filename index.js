@@ -2,8 +2,12 @@ const express= require('express')
 const app = express()
 const web3 = require('@solana/web3.js');
 const {Keypair} = require("@solana/web3.js")
+var cors = require('cors')
 
+
+app.use(cors())
   
+
 let connection,bal;
 
 app.get('/',(req, res) => {
@@ -48,7 +52,9 @@ app.get('/api/balance/:id',(req, res) => {
 
    
     getBalance(req.params.id).then(()=>{
-        res.send("Balance is:"+bal+"SOL")
+      //  res.send("Balance is:"+bal+"SOL")
+        res.json({balance: bal})
+
     }).catch((err)=>{
        res.send("Error")
     })

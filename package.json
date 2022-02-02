@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@solana/web3.js": "^1.32.0",
+    "cors": "^2.8.5",
     "express": "^4.17.2"
   }
 }
