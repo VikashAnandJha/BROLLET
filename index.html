@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -19,20 +20,41 @@
             font-family: 'Poppins', sans-serif;
         }
     </style>
+    
+  <link rel="stylesheet" href="assets/dark-mode.css">
   </head>
   <body>
+
     <div class="container display: flex; justify-content: center; align-items: center; height: 100vh">
+
+        <header class="mb-auto">
+            <div class="float-md-start fw-bold fs-5">
+                
+                <img src="img/brollet_logo_blue.png" class="img-fluid" style="max-width :200px;margin: 10px; margin-top:40px;" >
+   
+
+            </div>
+            <nav class="nav justify-content-center float-md-end">
+                 <a style="display:none" class="nav-link" href="https://github.com/VikashAnandJha/BROLLET" target="_blank">GitHub</a>
+              <div class="nav-link">
+      
+                <div class="form-check form-switch">
+                  <input type="checkbox" class="form-check-input" id="darkSwitch">
+                  <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
+                </div>
+                <script src="assets/dark-mode-switch.min.js"></script>
+      
+              </div>
+            </nav>
+          </header>
+
+          <main role="main">
 
     <div class="d-fl0ex justify-content-center" style="margin-top: 50px;">
 
 <div class="row">
-    <div class="col col-12 col-md-offset-2 col-md-4 ">
-        <div class="text-center">
-        <img src="img/brollet_logo_black.png" class="img-fluid" style="max-width :200px;">
-    </div>
-
-    </div>
-    <div class="col col-12 col-md-4"> 
+     
+    <div class="col col-12 col-md-8"> 
              
             <div class="row">
                 <div class="col col-md-12">
@@ -75,6 +97,23 @@
     
     </div>
     <br><br><br>
+
+    <div id="intro" class="justify-content-center">
+        <h1>Brollet is SOLANA based Wallet</h1>
+        <p class="lead">Use this website to get real-time transactions of your SOL address</p>
+        <ul class="list-unstyled">
+          <li>&middot; Uses fastest clusters on SOLANA network</li>
+          <li>&middot; Real-time wallet balance</li>
+        </ul>
+        <p style="display:none;">
+          <a href="https://github.com/VikashAnandJha/BROLLET" target="_blank" rel="noopener"
+            class="btn btn-lg btn-secondary">
+            Learn more
+          </a>
+        </p>
+    </div>
+   
+
     <div class="row data" style="display:none">
         <div class="col-md-4">
             <div class="card">
@@ -120,6 +159,14 @@
 
 
     </div>
+
+
+
+
+    </main>
+    <footer class="mt-auto"  >
+        <p style="margin-top :150px;">&copy; 2022 VikashAnandJha</p>
+      </footer>
  </div>
 <style>
     .balance{
@@ -154,9 +201,11 @@ var bal=0;
     $('.data').show();
  
      $('#balancetxt').html(data.balance.toFixed(4)+" SOL")
+     $('#intro').hide()
  }else if(data.status=="error"){
 
     $('.data').hide();
+    $('#intro').show()
       
  }
  setTimeout(function(){
