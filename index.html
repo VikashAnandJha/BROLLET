@@ -20,8 +20,7 @@
             font-family: 'Poppins', sans-serif;
         }
     </style>
-    
-  <link rel="stylesheet" href="assets/dark-mode.css">
+     
   
   </head>
   <body  >
@@ -31,21 +30,15 @@
         <header class="mb-auto">
             <div class="float-md-start fw-bold fs-5">
                 
-                <img src="img/brollet_logo_black.png" class="img-fluid" style="max-width :200px;margin: 10px; margin-top:40px;" >
+              <div class="justify-content-center">
+                <img src="img/brollet_logo_black.png" class="img-fluid" style="max-width :250px;margin: 10px; margin-top:30px;" >
    
+              </div>
+              
 
             </div>
             <nav class="nav justify-content-center float-md-end">
-                 <a class="nav-link" href="https://github.com/VikashAnandJha/BROLLET" target="_blank" style="display:none">GitHub</a>
-              <div class="nav-link">
-      
-                <div class="form-check form-switch"  >
-                  <input type="checkbox" class="form-check-input" id="darkSwitch">
-                  <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
-                </div>
-                <script src="assets/dark-mode-switch.min.js"></script>
-      
-              </div>
+                   
             </nav>
           </header>
 
@@ -201,6 +194,7 @@
 <script>
 
 var bal=0;
+var total_usd=0;
     function getSOLBalance(address){
 
         $.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
@@ -245,9 +239,9 @@ if(usdbal>0){
 $('#usdbalancepersoltxt').html("$"+data.solana.usd.toFixed(2)+"")
 //$('#loading').hide()
 
-//var msg = new SpeechSynthesisUtterance();
-//msg.text = usdbal.toFixed(2)+" dollars";
-//window.speechSynthesis.speak(msg);
+total_usd=usdbal.toFixed(2)
+
+
 
 
 }
@@ -345,6 +339,25 @@ getSOLRate();
 
 
     },5*1000)
+
+
+
+    function speak(word){
+      var msg = new SpeechSynthesisUtterance();
+msg.text = word;
+window.speechSynthesis.speak(msg);
+
+    }
+
+
+    setInterval(function(){
+
+      if(total_usd>0)
+      {
+        speak(total_usd+" dollars")
+      }
+
+    },25*1000)
     
 </script>
 
