@@ -118,7 +118,7 @@
     <div class="row data" style="display:none">
         <div class="col-md-4">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body ">
             <div class="text-center">
                 <span id="balancetxt" class="balance">loading</span><br>
                 SOL balance
@@ -170,6 +170,8 @@
             Credits: 
             <a target="blank" href="https://www.coingecko.com/"><img src="img/coingecko.png" width="100" /></a>
             <a target="blank" href="https://solana.com/"><img src="img/solana.png" width="100" /></a>
+            <a target="blank" href="https://solscan.io/" id="solscan"><img src="img/solscan.png" width="30" /></a>
+             
             <hr>
             &copy; 2022 VikashAnandJha
         
@@ -286,7 +288,12 @@ function startProcess()
         getSOLBalance(address)
 
 getSOLRate();
+
+
+
+$('#solscan').attr("href", "https://solscan.io/account/"+address)
     }
+    
 
 }
 
@@ -312,6 +319,7 @@ $( "#address" ).change(function() {
        
 
 startProcess()
+
      
      }
 
