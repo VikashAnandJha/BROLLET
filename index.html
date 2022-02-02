@@ -37,12 +37,26 @@
             <div class="row">
                 <div class="col col-md-12">
                     <div class="form-group mx-sm-12 mb-2">
-                        
-                         <input style="margin-top:10px;" type="text" class="form-control form-control-sm" id="address" placeholder="SOLANA PUBLIC ADDRESS "   
-                         value="GzhmgytCMCNBtSqTLaPZ9ALF8Sq4GZVzVXAAK6FsBBw4"
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              mainnet-beta
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item" href="#">mainnet-beta</a>
+                               </div>
+                          </div>
+                         <input autocomplete="off" style="margin-top:10px;" type="text" class="form-control form-control-sm" id="address" placeholder="SOLANA PUBLIC ADDRESS "   
+                         
                          >
                         
                       </div>
+
+<div id="loading" style="display:none">
+<img src="img/loading.gif" width="20"/> Fetching..
+ 
+
+</div>
+
                     </div>
                     </div>
  
@@ -120,6 +134,10 @@
 </style>
 
 <script>
+
+$( "#address" ).change(function() {
+   $('#loading').show()
+});
     
 
 var bal=0;
@@ -129,9 +147,14 @@ var bal=0;
     if(address!=undefined && address){
         $.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
  
+
+            
+ 
+console.log(data)
  console.log(data.balance)
 bal=data.balance;
  $('#balancetxt').html(data.balance.toFixed(4)+" SOL")
+ $('#loading').hide()
    
 });
     }
@@ -144,6 +167,7 @@ bal=data.balance;
 var usdbal=data.solana.usd*bal;
  $('#usdbalancetxt').html("$"+usdbal.toFixed(2)+"")
  $('#usdbalancepersoltxt').html("$"+data.solana.usd.toFixed(2)+"")
+ //$('#loading').hide()
    
 });
 

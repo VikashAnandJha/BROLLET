@@ -56,7 +56,7 @@ app.get('/api/balance/:id',(req, res) => {
         res.json({balance: bal})
 
     }).catch((err)=>{
-       res.send("Error")
+       res.json("Error")
     })
 
     
