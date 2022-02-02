@@ -53,10 +53,10 @@ app.get('/api/balance/:id',(req, res) => {
    
     getBalance(req.params.id).then(()=>{
       //  res.send("Balance is:"+bal+"SOL")
-        res.json({balance: bal})
+        res.json({"status": "success",balance: bal})
 
     }).catch((err)=>{
-       res.json("Error")
+       res.json({"status": "error"})
     })
 
     
