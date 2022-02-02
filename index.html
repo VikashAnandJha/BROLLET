@@ -22,8 +22,9 @@
     </style>
     
   <link rel="stylesheet" href="assets/dark-mode.css">
+  
   </head>
-  <body>
+  <body  >
 
     <div class="container display: flex; justify-content: center; align-items: center; height: 100vh">
 
@@ -38,7 +39,7 @@
                  <a style="display:none" class="nav-link" href="https://github.com/VikashAnandJha/BROLLET" target="_blank">GitHub</a>
               <div class="nav-link">
       
-                <div class="form-check form-switch">
+                <div class="form-check form-switch"  >
                   <input type="checkbox" class="form-check-input" id="darkSwitch">
                   <label class="custom-control-label" for="darkSwitch">Dark Mode</label>
                 </div>
@@ -182,6 +183,10 @@
         border:5px solid red;
         min-height: 100%;
     }
+
+    
+
+
 </style>
 
 <script>
@@ -230,6 +235,11 @@ if(usdbal>0){
     $('#usdbalancetxt').html("$"+usdbal.toFixed(2)+"")
 $('#usdbalancepersoltxt').html("$"+data.solana.usd.toFixed(2)+"")
 //$('#loading').hide()
+
+//var msg = new SpeechSynthesisUtterance();
+//msg.text = usdbal.toFixed(2)+" dollars";
+//window.speechSynthesis.speak(msg);
+
 
 }
 
