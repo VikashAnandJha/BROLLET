@@ -127,7 +127,7 @@ var bal=0;
 
         var address=$('#address').val();
     if(address!=undefined && address){
-        $.getJSON( "http://192.168.97.251:5000/api/balance/"+address, function( data ) {
+        $.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
  
  console.log(data.balance)
 bal=data.balance;
