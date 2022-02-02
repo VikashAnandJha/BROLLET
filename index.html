@@ -166,7 +166,14 @@
 
     </main>
     <footer class="mt-auto"  >
-        <p style="margin-top :150px;">&copy; 2022 VikashAnandJha</p>
+        <p style="margin-top :150px;">
+            Credits: 
+            <a target="blank" href="https://www.coingecko.com/"><img src="img/coingecko.png" width="100" /></a>
+            <a target="blank" href="https://solana.com/"><img src="img/solana.png" width="100" /></a>
+            <hr>
+            &copy; 2022 VikashAnandJha
+        
+        </p>
       </footer>
  </div>
 <style>
@@ -247,16 +254,64 @@ $('#usdbalancepersoltxt').html("$"+data.solana.usd.toFixed(2)+"")
     }
 
 
+    function setCookie(cname, cvalue, exdays) {
+        document.cookie = cname+"="+cvalue;
+
+        //console.log(cvalue)
+
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+
+function startProcess()
+{
+    var address=$('#address').val(); 
+    if(address!=undefined && address){
+    $('#loading').show()
+        getSOLBalance(address)
+
+getSOLRate();
+    }
+
+}
+
+
+let user = getCookie("address");
+  if (user != "") {
+   // alert("Welcome again " + user);
+    $('#address').val(user);
+    
+startProcess()
+
+  }
+
 $( "#address" ).change(function() {
   
    var address=$('#address').val(); 
 
     if(address!=undefined && address){
 
-        $('#loading').show()
-        getSOLBalance(address)
+         
+        setCookie("address", address, 300);
 
-getSOLRate();
+       
+
+startProcess()
      
      }
 
