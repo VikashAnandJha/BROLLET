@@ -32,7 +32,7 @@ async function generateAccount(mnemonic) {
  async function getBalance(address) {
     let key = new web3.PublicKey(address);
 
-    connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'), 'confirmed');
+   // connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'), 'confirmed');
       bal = await connection.getBalance(key);
       bal=bal/web3.LAMPORTS_PER_SOL;
     console.log(bal)
