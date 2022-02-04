@@ -134,7 +134,7 @@ app.get('/api/balance/:id',(req, res) => {
         res.json({"status": "success","tokens": tokens})
 
     }).catch((err)=>{
-       res.json({"status": "error"})
+       res.json({"status": "error","msg":err})
     })
 
   }else{
