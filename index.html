@@ -217,6 +217,14 @@ var total_usd=0;
  
      $('#balancetxt').html(data.balance.toFixed(4)+" SOL")
      $('#intro').hide()
+
+
+     if(data.tokens!=undefined)
+     {
+       display(data.tokens)
+     }
+
+
  }else if(data.status=="error"){
 
     $('.data').hide();
@@ -234,22 +242,18 @@ var total_usd=0;
     }
 
 
-    function getAssocBalance(address){
-
-$.getJSON( "https://brollet.herokuapp.com/api/balance/"+address+"?type=assoc&mint=ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx", function( data ) {
+    function display(tokens){
 
 
     
 
-console.log(data)  
+console.log(tokens)  
  
- 
-if(data.status=="success")
-{
+  var data=tokens;
   $('#tokenlist').html('');
 
-  for(var i=0;i<data.tokens.length;i++){
-    var token=data.tokens[i];
+  for(var i=0;i<tokens.length;i++){
+    var token=tokens[i];
     $('#tokenlist').append('<li class="list-group-item d-flex justify-content-between align-items-center">'
       +'<span class="label label-default">'+token.amount+'</span>'
                      +token.mint
@@ -257,20 +261,11 @@ if(data.status=="success")
                     +'</li>')
   }
 
-  if(data.status=="error")
-{
-  $('#tokenlist').html('<font color=red>Error in fetching associated accounts</font>');
-}
+   
 
-}
+} 
 
-
-
- 
-
-    })
-
-  }
+  
 
 
 
@@ -389,16 +384,10 @@ getSOLRate();
 
 
 
-    },5*1000)
+    },6*1000)
 
 
-    setInterval(function(){
-      var address=$('#address').val();
-    if(address!=undefined && address){
-     // getAssocBalance(address);
-
-    }
-    },10*1000);
+     
 
 
 
