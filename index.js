@@ -95,6 +95,8 @@ item = {}
    console.log(arr)
 
 tokens=arr;
+
+getBalance(address)
    return arr;
    
 
@@ -124,28 +126,37 @@ res.json({"sucess":true,"key":key});
 app.get('/api/balance/:id',(req, res) => {
 
 
+  getAssocBalance(req.params.id,req.query.type).then(()=>{
+    //  res.send("Balance is:"+bal+"SOL")
+      res.json({"status": "success","balance":bal,"tokens": tokens})
+
+  }).catch((err)=>{
+    console.log(err)
+     res.json({"status": "error","msg":err.message})
+  })
 
   console.log("type:"+req.query.type+" mint="+req.query.type)
 
-  if(req.query.type=="assoc"){
+  // if(req.query.type=="assoc"){
    
-    getAssocBalance(req.params.id,req.query.type).then(()=>{
-      //  res.send("Balance is:"+bal+"SOL")
-        res.json({"status": "success","tokens": tokens})
+  //   getAssocBalance(req.params.id,req.query.type).then(()=>{
+  //     //  res.send("Balance is:"+bal+"SOL")
+  //       res.json({"status": "success","sol":bal,"tokens": tokens})
 
-    }).catch((err)=>{
-       res.json({"status": "error","msg":err})
-    })
+  //   }).catch((err)=>{
+  //     console.log(err)
+  //      res.json({"status": "error","msg":err.message})
+  //   })
 
-  }else{
-    getBalance(req.params.id).then(()=>{
-      //  res.send("Balance is:"+bal+"SOL")
-        res.json({"status": "success","balance": bal})
+  // }else{
+  //   getBalance(req.params.id).then(()=>{
+  //     //  res.send("Balance is:"+bal+"SOL")
+  //       res.json({"status": "success","balance": bal})
 
-    }).catch((err)=>{
-       res.json({"status": "error"})
-    })
-  }
+  //   }).catch((err)=>{
+  //      res.json({"status": "error"})
+  //   })
+  // }
    
    
 
