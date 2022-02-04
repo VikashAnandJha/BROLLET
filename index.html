@@ -149,6 +149,13 @@
                 </div>
 
 
+                <div class="col col-md-12">
+                  <br><h3>Tokens</h3><br>
+                  <ul class="list-group" id="tokenlist">
+                    
+                     
+                  </ul>
+                </div>
 
 
 
@@ -224,41 +231,46 @@ var total_usd=0;
  });
 
 
-
     }
 
 
     function getAssocBalance(address){
 
-$.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
+$.getJSON( "https://brollet.herokuapp.com/api/balance/"+address+"?type=assoc&mint=ATLASXmbPQxBUYbxPsV97usA3fPQYEqzQBUHgiFCUsXx", function( data ) {
 
 
     
 
-console.log(data)
-console.log(data.balance)
-bal=data.balance;
-if(data.status=="success"){
-$('.data').show();
+console.log(data)  
+ 
+ 
+if(data.status=="success")
+{
+  $('#tokenlist').html('');
 
-$('#balancetxt').html(data.balance.toFixed(4)+" SOL")
-$('#intro').hide()
-}else if(data.status=="error"){
+  for(var i=0;i<data.tokens.length;i++){
+    var token=data.tokens[i];
+    $('#tokenlist').append('<li class="list-group-item d-flex justify-content-between align-items-center">'
+      +'<span class="label label-default">'+token.amount+'</span>'
+                     +token.mint
+                     + '<span class="badge badge-primary badge-pill">'+token.amount+'</span>'
+                    +'</li>')
+  }
 
-$('.data').hide();
-$('#intro').show()
+  if(data.status=="error")
+{
+  $('#tokenlist').html('<font color=red>Error in fetching associated accounts</font>');
+}
 
 }
-setTimeout(function(){
-
-$('#loading').hide()
-},1000)
-
-});
 
 
 
-}
+ 
+
+    })
+
+  }
 
 
 
@@ -364,6 +376,10 @@ startProcess()
         getSOLBalance(address)
 
 getSOLRate();
+
+
+
+getAssocBalance(address);
      
      }
  
