@@ -228,6 +228,41 @@ var total_usd=0;
     }
 
 
+    function getAssocBalance(address){
+
+$.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
+
+
+    
+
+console.log(data)
+console.log(data.balance)
+bal=data.balance;
+if(data.status=="success"){
+$('.data').show();
+
+$('#balancetxt').html(data.balance.toFixed(4)+" SOL")
+$('#intro').hide()
+}else if(data.status=="error"){
+
+$('.data').hide();
+$('#intro').show()
+
+}
+setTimeout(function(){
+
+$('#loading').hide()
+},1000)
+
+});
+
+
+
+}
+
+
+
+
     function getSOLRate(){
         $.getJSON( "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true", function( data ) {
   
@@ -357,7 +392,7 @@ window.speechSynthesis.speak(msg);
         speak(total_usd+" dollars")
       }
 
-    },25*1000)
+    },30*1000)
     
 </script>
 
