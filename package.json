@@ -14,7 +14,10 @@
     "@solana/spl-token": "^0.1.8",
     "@solana/web3.js": "^1.32.0",
     "bip39": "^3.0.4",
+    "bip44": "0.0.1",
+    "body-parser": "^1.19.1",
     "cors": "^2.8.5",
+    "ed25519-hd-key": "^1.2.0",
     "express": "^4.17.2"
   }
 }
