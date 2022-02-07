@@ -204,7 +204,7 @@ var bal=0;
 var total_usd=0;
     function getSOLBalance(address){
 
-        $.getJSON( "https://brollet.herokuapp.com/api/balance/"+address, function( data ) {
+        $.getJSON( "https://brollet.herokuapp.com/api/balance/"+address+"?endpoint=mainnet-beta", function( data ) {
  
 
             

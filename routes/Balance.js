@@ -28,6 +28,14 @@ connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
  
 
 
+function createConnection(endpoint)
+
+{
+    console.log("Connecting server: ",endpoint)
+    connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
+ 
+}
+
  async function getBalance(address) {
     let key = new web3.PublicKey(address);
 
@@ -174,7 +182,7 @@ tokens=arr;
 
 router.get('/balance/:id',(req, res) => {
  
-   
+   createConnection(req.query.endpoint)
 
     getAssocBalance(req.params.id,req.query.type).then(()=>{
       //  res.send("Balance is:"+bal+"SOL")
@@ -226,6 +234,9 @@ router.get('/balance/:id',(req, res) => {
   })
 
   router.post('/transfer',(req, res)=>{
+      
+   createConnection(req.query.endpoint)
+   
     var fromAddress=  req.body.fromAddress;
     var toAddress=  req.body.toAddress;
     var key=  req.body.key;
