@@ -75,8 +75,8 @@ var acckey=account.pubkey.toString();
      
    );
 var mint=account.account.data["parsed"]["info"]["mint"];
-var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]/web3.LAMPORTS_PER_SOL;
-
+var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]*web3.LAMPORTS_PER_SOL;
+console.log(amount)
 
 item = {}
         item ["mint"] = mint;
