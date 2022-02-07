@@ -35,7 +35,8 @@ function createConnection(endpoint)
         console.log("Connecting server: ",endpoint)
         connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
     }else{
-        console.log("Endpoint not given. Skipping connection formation")
+      connection = new web3.Connection(web3.clusterApiUrl("devnet"), 'confirmed');
+        console.log("Endpoint not given. Connected to devnet")
     }
    
  
