@@ -31,8 +31,13 @@ connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
 function createConnection(endpoint)
 
 {
-    console.log("Connecting server: ",endpoint)
-    connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
+    if(endpoint!=undefined){
+        console.log("Connecting server: ",endpoint)
+        connection = new web3.Connection(web3.clusterApiUrl(endpoint), 'confirmed');
+    }else{
+        console.log("Endpoint not given. Skipping connection formation")
+    }
+   
  
 }
 
@@ -234,9 +239,9 @@ router.get('/balance/:id',(req, res) => {
   })
 
   router.post('/transfer',(req, res)=>{
-      
+       
    createConnection(req.query.endpoint)
-   
+
     var fromAddress=  req.body.fromAddress;
     var toAddress=  req.body.toAddress;
     var key=  req.body.key;
