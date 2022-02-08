@@ -126,7 +126,8 @@ var mint=account.account.data["parsed"]["info"]["mint"];
 var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"];
 console.log(amount)
 
-var token_data=tokenList.find( record => record.address === mint)
+var token_data;
+token_data=tokenList.find( record => record.address === mint)
 
 //console.log(datasearch)
 
