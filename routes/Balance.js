@@ -15,12 +15,14 @@ const { derivePath, getMasterKeyFromSeed, getPublicKey } = require('ed25519-hd-k
 const bip39 = require("bip39")
 const bip44 = require("bip44")
 var cors = require('cors')
+const { TokenListProvider, TokenInfo } = require('@solana/spl-token-registry');
+
 
 
 router.use(express.urlencoded({extended: true}));
 router.use(express.json()) //For JSON requests
 
-let connection,bal,tokens,endpoint="devnet",fromWallet,toWallet;
+let connection,bal,tokens,endpoint="devnet",fromWallet,toWallet,tokenList;
 
 //endpoint="mainnet-beta";
 
@@ -55,7 +57,26 @@ function createConnection(endpoint)
     
    
  }
+
+
+ async function getTokenList()
+ {
+  new TokenListProvider().resolve().then(tokens => {
+      tokenList = tokens.filterByClusterSlug('mainnet-beta').getList();
+    
+
+})
+
+
+ }
+
  async function getAssocBalance(address,mint) {
+  var tokenList = [];
+  new TokenListProvider().resolve().then(tokens => {
+    tokenList = tokens.filterByClusterSlug('mainnet-beta').getList();
+  
+
+})
     console.log("fetching balance for: "+address)
   let key = new web3.PublicKey(address);
 
@@ -105,9 +126,15 @@ var mint=account.account.data["parsed"]["info"]["mint"];
 var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"];
 console.log(amount)
 
+var token_data=tokenList.find( record => record.address === mint)
+
+//console.log(datasearch)
+
+
 item = {}
         item ["mint"] = mint;
         item ["amount"] = amount;
+       item ["token_data"] = token_data;
 
         arr.push(item);
    });
@@ -263,5 +290,14 @@ router.get('/balance/:id',(req, res) => {
      
 
   })
+
+  router.get('/tokenList',(req, res)=>{
+    new TokenListProvider().resolve().then(tokens => {
+      const tokenList = tokens.file('mainnet-beta').getList();
+      res.json(tokenList)
+
+  })
+
+})
 
   module.exports = router;
