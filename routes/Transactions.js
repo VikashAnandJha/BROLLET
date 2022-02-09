@@ -29,10 +29,20 @@ router.post('/txn/add',(req,res)=>{
       res.json(err)
     })
   })
-  router.get('txn/:id',(req,res)=>{
+  router.get('/txn/list/:id',(req,res)=>{
    
     let id=req.params.id;
-    User.find().or([{ name: id }, { mobile: id }]).limit(1).then((result)=>{
+    Transaction.find().or([{ from_publicKey: id }, { to_publicKey: id }]).limit(100).then((result)=>{
+      res.json(result)
+    }).catch((err)=>{
+      res.json(err)
+    })
+  })
+
+  router.get('/txn/details/:id',(req,res)=>{
+   
+    let id=req.params.id;
+    Transaction.findById(id).then((result)=>{
       res.json(result)
     }).catch((err)=>{
       res.json(err)
