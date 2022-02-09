@@ -244,27 +244,54 @@ tokens=arr;
          
         } 
 
-router.get('/balance/:id',(req, res) => {
+ router.get('/balance/:id',(req, res) => {
  
-   createConnection(req.query.endpoint)
+          createConnection(req.query.endpoint)
+       
+           getAssocBalance(req.params.id,req.query.type).then(()=>{
+             //  res.send("Balance is:"+bal+"SOL")
+               res.json({"status": "success","balance":bal,"tokens": tokens})
+         
+           }).catch((err)=>{
+             console.log(err)
+              res.json({"status": "error","msg":err.message})
+           })
+         
+           console.log("type:"+req.query.type+" mint="+req.query.type)
+          
+            
+            
+         
+             
+            
+         })
 
-    getAssocBalance(req.params.id,req.query.type).then(()=>{
-      //  res.send("Balance is:"+bal+"SOL")
-        res.json({"status": "success","balance":bal,"tokens": tokens})
-  
-    }).catch((err)=>{
-      console.log(err)
-       res.json({"status": "error","msg":err.message})
-    })
-  
-    console.log("type:"+req.query.type+" mint="+req.query.type)
-   
-     
-     
-  
-      
-     
-  })
+  async function checkMainBalance(address)
+  {
+    
+    let key = new web3.PublicKey(address);
+
+    // connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'), 'confirmed');
+       bal = await connection.getBalance(key);
+
+       return bal;
+
+  }
+
+router.get('/verify/:id',(req, res) => {
+ 
+          createConnection(req.query.endpoint)
+
+          checkMainBalance(req.params.id).then((bal)=>{
+            res.json({status:"success","msg":bal})
+          }).catch((err)=>{
+            console.log(err)
+            res.json({status:"error","msg":err.message})
+          })
+
+            
+        
+         })
 
    
 

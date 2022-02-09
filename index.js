@@ -1,9 +1,16 @@
 const express= require('express')
 const app = express()
+const mongoose = require("mongoose")
+var cors = require('cors') 
 
-var cors = require('cors')
 
-
+const dbURI="mongodb+srv://vikashjha:jhajha22@brollet.168kf.mongodb.net/brollet";
+mongoose.connect(dbURI,{useNewUrlParser:true,useUnifiedTopology:true}).then((msg)=>{
+console.log("db connected succesfully")
+ 
+}).catch((err)=>{
+  console.log(err)
+})
 
 
 
@@ -18,6 +25,8 @@ app.use(express.static(__dirname+'/public'));
 
 const keyRoute=require('./routes/Key');
 const balanceRoute=require('./routes/Balance');
+const usersRoute=require('./routes/Users');
+const txnRoute=require('./routes/Transactions');
 
 
 // PORT 
@@ -26,6 +35,8 @@ app.listen(PORT,() => console.log("Listening "+PORT))
 
 app.use("/api/",keyRoute)
 app.use("/api/",balanceRoute)
+app.use("/api/",usersRoute)
+app.use("/api/",txnRoute)
 
 app.get('/',(req, res) => {
 
@@ -34,3 +45,5 @@ app.get('/',(req, res) => {
 
  // console.log(solanaWeb3);
 }) 
+
+
