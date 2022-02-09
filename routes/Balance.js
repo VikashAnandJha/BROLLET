@@ -16,13 +16,23 @@ const bip39 = require("bip39")
 const bip44 = require("bip44")
 var cors = require('cors')
 const { TokenListProvider, TokenInfo } = require('@solana/spl-token-registry');
+const {   programs } = require('@metaplex/js'); 
+const { Metadata } = require('@metaplex-foundation/mpl-token-metadata');
+const {
+  resolveToWalletAddress,
+  getParsedNftAccountsByOwner,
+} = require("@nfteyez/sol-rayz");
+const axios = require('axios');
 
 
 
+
+
+router.use(cors())
 router.use(express.urlencoded({extended: true}));
 router.use(express.json()) //For JSON requests
 
-let connection,bal,tokens,endpoint="devnet",fromWallet,toWallet,tokenList;
+let connection,bal,tokens,endpoint="devnet",fromWallet,toWallet,tokenList,nftdata;
 
 //endpoint="mainnet-beta";
 
@@ -112,16 +122,16 @@ function createConnection(endpoint)
  accounts.forEach((account, i) => {
 //var acckey=account.pubkey.toString();
    //console.log(account.account.data["parsed"]["info"]["mint"]);
-   console.log(
-     `-- Token Account Address ${i + 1}: ${account.pubkey.toString()} --`
+  //  console.log(
+  //    `-- Token Account Address ${i + 1}: ${account.pubkey.toString()} --`
     
-   );
-   console.log(`Mint: ${account.account.data["parsed"]["info"]["mint"]}`);
-   console.log(
-     `Amount: ${account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]}`
+  //  );
+    console.log(account.account.data["parsed"]["info"]);
+  //  console.log(
+  //    `Amount: ${account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]}`
      
      
-   );
+  //  );
 var mint=account.account.data["parsed"]["info"]["mint"];
 var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"];
 console.log(amount)
@@ -129,7 +139,14 @@ console.log(amount)
 var token_data;
 token_data=tokenList.find( record => record.address === mint)
 
-//console.log(datasearch)
+
+ 
+
+//console.log(token_data)
+
+// getNftList(mint).then(()=>{
+//   token_data=nftdata;
+// });
 
 
 item = {}
@@ -137,7 +154,20 @@ item = {}
         item ["amount"] = amount;
        item ["token_data"] = token_data;
 
-        arr.push(item);
+
+    //    if(token_data==undefined){
+    //     getNftList(mint).then(()=>{
+    //      token_data=nftdata.name;
+         
+    //  console.log("recvd")
+    //  console.log(token_data)
+    
+    //    });
+    // }
+
+    if(token_data!=undefined)
+    arr.push(item);
+        
    });
 
    console.log(arr)
@@ -236,36 +266,7 @@ router.get('/balance/:id',(req, res) => {
      
   })
 
-  router.get('/sol_balance/:id',(req, res) => {
-
-
-  
-    getBalance(req.params.id).then(()=>{
-      //  res.send("Balance is:"+bal+"SOL")
-        res.json({"status": "success","balance": bal})
-  
-    }).catch((err)=>{
-       res.json({"status": "error"})
-    })
-  
    
-   
-  
-    
-   
-  })
-  router.get('/token_balance/:id',(req, res) => {
-  
-    getAssocBalance(req.params.id,req.query.type).then(()=>{
-      //  res.send("Balance is:"+bal+"SOL")
-        res.json({"status": "success","tokens": tokens})
-  
-    }).catch((err)=>{
-      console.log(err)
-       res.json({"status": "error","msg":err.message})
-    })
-   
-  })
 
   router.post('/transfer',(req, res)=>{
        
@@ -292,13 +293,121 @@ router.get('/balance/:id',(req, res) => {
 
   })
 
-  router.get('/tokenList',(req, res)=>{
-    new TokenListProvider().resolve().then(tokens => {
-      const tokenList = tokens.file('mainnet-beta').getList();
-      res.json(tokenList)
 
-  })
+  async function getNftList(id){
+    
+    //const tokenPublicKey = '26n5r44sjT76JAizmomXanyoaZqgrnyZtkVeS9KjDVDN';
+    // try {
+    //   const ownedMetadata = await Metadata.load(connection, tokenPublicKey);
+    //   console.log(ownedMetadata);
+    // } catch {
+    //   console.log('Failed to fetch metadata');
+    // }
+    const tokenPublicKey = id;
+    console.log("fetching data for:",id)
+
+ 
+    const tokenMint = id;
+    const metadataPDA = await Metadata.getPDA(new PublicKey(tokenMint));
+    const tokenMetadata = await Metadata.load(connection, metadataPDA);
+     
+var data=tokenMetadata.data;
+//console.log("data"+data.data)
+//console.log("data.data.data"+data.data.name)
+  nftdata=data.data;
+ 
+var arr = [];
+      item = {}
+         item ["name"] = nftdata.name;
+          item ["symbol"] = nftdata.symbol;
+        item ["uri"] = nftdata.uri;
+
+        if(toke)
+          arr.push(item);
+
+          console.log("Nft data:"+nftdata)
+
+          return arr;
+
+
+ 
+    
+
+
+
+  }
+
+  router.get('/nft/:id',(req, res)=>{
+    
+   createConnection(req.query.endpoint)
+    console.log(req.params.id+" geting nft")
+    getNftList(req.params.id).then(()=>{
+      res.json(nftdata)
+    });
 
 })
+
+async function getData(mint)
+{
+  const tokenMint = mint;
+const metadataPDA = await Metadata.getPDA(new PublicKey(tokenMint));
+const tokenMetadata = await Metadata.load(connection, metadataPDA);
+console.log(tokenMetadata.data.data);
+return tokenMetadata.data.data;
+}
+
+
+async function list(address,res){
+
+
+  let key = new web3.PublicKey(address);
+ 
+  console.log("finding nft list: "+address)
+    
+
+  const publicAddress = await resolveToWalletAddress({
+    text: address
+  });
+  
+  const nftArray = await getParsedNftAccountsByOwner({
+    publicAddress,
+  });
+
+
+var data=nftArray;
+  let arr = [];
+    let n = data.length;
+    for (let i = 0; i < n; i++) {
+      console.log(data[i].data.uri);
+      let val = await axios.get(data[i].data.uri);
+
+      console.log(val.data)
+      arr.push(val.data);
+    }
+
+
+
+  //console.log(arr)
+
+  res.send(arr)
+
+ 
+
+
+}
+
+ 
+router.get('/nftlist/:id',(req, res)=>{
+    
+  createConnection(req.query.endpoint)
+  list(req.params.id,res)
+ 
+     
+
+})
+
+
+
+
 
   module.exports = router;
