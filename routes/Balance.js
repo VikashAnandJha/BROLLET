@@ -24,6 +24,7 @@ const {
 } = require("@nfteyez/sol-rayz");
 const axios = require('axios');
 
+const TransactionModel = require('../models/Transactions')
 
 
 
@@ -60,7 +61,7 @@ function createConnection(endpoint)
    // connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'), 'confirmed');
       bal = await connection.getBalance(key);
       bal=bal/web3.LAMPORTS_PER_SOL;
-    console.log(bal)
+    //console.log(bal)
   //return bal;
   //res.send("Balance of this solana account:"+req.params.id+" is "+bal+"\nFilter by:"+req.query.showIn);
   //res.send("Balance of this solana account:"+bal);
@@ -87,13 +88,13 @@ function createConnection(endpoint)
   
 
 })
-    console.log("fetching balance for: "+address)
+    //console.log("fetching balance for: "+address)
   let key = new web3.PublicKey(address);
 
   // connection = new web3.Connection(web3.clusterApiUrl('mainnet-beta'), 'confirmed');
      bal = await connection.getBalance(key);
      bal=bal/web3.LAMPORTS_PER_SOL;
-   console.log(bal)
+  // console.log(bal)
 
 
   const accounts = await connection.getParsedProgramAccounts(
@@ -126,7 +127,7 @@ function createConnection(endpoint)
   //    `-- Token Account Address ${i + 1}: ${account.pubkey.toString()} --`
     
   //  );
-    console.log(account.account.data["parsed"]["info"]);
+   // console.log(account.account.data["parsed"]["info"]);
   //  console.log(
   //    `Amount: ${account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"]}`
      
@@ -134,7 +135,7 @@ function createConnection(endpoint)
   //  );
 var mint=account.account.data["parsed"]["info"]["mint"];
 var amount=account.account.data["parsed"]["info"]["tokenAmount"]["uiAmount"];
-console.log(amount)
+//console.log(amount)
 
 var token_data;
 token_data=tokenList.find( record => record.address === mint)
@@ -170,7 +171,7 @@ item = {}
         
    });
 
-   console.log(arr)
+   //console.log(arr)
 
 tokens=arr;
  
@@ -193,7 +194,7 @@ tokens=arr;
       for (let i = 0; i < 1; i++) {
           path = `m/44'/501'/${i}'/0'`;
           keypair = Keypair.fromSeed(derivePath(path, seed.toString("hex")).key);
-        console.log(`${path} => ${keypair.publicKey.toBase58()}`);
+       // console.log(`${path} => ${keypair.publicKey.toBase58()}`);
       
         if(i==0)
         {
@@ -207,7 +208,7 @@ tokens=arr;
         
       toWallet = new web3.PublicKey(toAddress); //HOLDER OF ATLAS
 
-  console.log(fromWallet.publicKey)
+  //console.log(fromWallet.publicKey)
   var balance=await connection.getBalance(fromWallet.publicKey) / web3.LAMPORTS_PER_SOL;
           console.log(balance)
         var tamount=amount;
@@ -303,16 +304,37 @@ router.get('/verify/:id',(req, res) => {
     var toAddress=  req.body.toAddress;
     var key=  req.body.key;
     var amount=  req.body.amount;
+    var token_name=  req.body.token_name;
     
     console.log(key)
     sendSOL(fromAddress,toAddress,amount,key).then((hash)=>{
 
         console.log("hash:"+hash)
-        res.json({"status": "success","hash":hash})
+
+        const txn=new TransactionModel({
+          "hash":hash,"amount":amount,"from_publicKey":fromAddress,"to_publicKey":toAddress,"status":"success","type":"sent",
+          "token_name":token_name
+        })
+        txn.save().then((result)=>{
+          console.log(result)
+        }).catch((err)=>{
+          console.log(err)
+        })
+
+       res.json({"status": "success","hash":hash})
   
 
     }).catch((hash)=>{
         console.log(hash)
+        const txn=new TransactionModel({
+          "hash":hash,"amount":amount,"from_publicKey":fromAddress,"to_publicKey":toAddress,"status":"error","type":"sent",
+          "token_name":token_name
+        })
+        txn.save().then((result)=>{
+          console.log(result)
+        }).catch((err)=>{
+          console.log(err)
+        })
        res.json({"status": "error","hash":hash})
     })
 

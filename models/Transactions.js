@@ -25,6 +25,10 @@ const txnSchema =new Schema({
     status:{
         type: String,
         required: false
+    },
+    token_name:{
+        type: String,
+        required: true
     }
 },{timestamps:true})
 

@@ -18,16 +18,20 @@ router.post('/txn/add',(req,res)=>{
     let to_publicKey=req.body.to_publicKey;
     let status=req.body.status;
     let type=req.body.type;
+    let token_name=req.body.token_name;
     
 
     const txn=new Transaction({
-      "hash":hash,"amount":amount,"from_publicKey":from_publicKey,"to_publicKey":to_publicKey,"status":status,"type":type
+      "hash":hash,"amount":amount,"from_publicKey":from_publicKey,"to_publicKey":to_publicKey,"status":status,"type":type,
+      "token_name":token_name
     })
     txn.save().then((result)=>{
       res.json(result)
     }).catch((err)=>{
       res.json(err)
     })
+
+
   })
   router.get('/txn/list/:id',(req,res)=>{
    
