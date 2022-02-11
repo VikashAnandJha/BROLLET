@@ -45,5 +45,12 @@ app.get('/',(req, res) => {
 
  // console.log(solanaWeb3);
 }) 
+app.get('/privacy',(req, res) => {
+
+  res.sendFile('privacy.html', { root: __dirname });
+
+
+ // console.log(solanaWeb3);
+}) 
 
 

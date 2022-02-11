@@ -455,6 +455,31 @@ router.get('/nftlist/:id',(req, res)=>{
 
 })
 
+async function getBalance(address)
+{
+  let key = new web3.PublicKey(address);
+  bal = await connection.getBalance(key);
+  bal=bal/web3.LAMPORTS_PER_SOL;
+
+  return bal;
+}
+
+router.get('/sol_balance/:id',(req, res) => {
+ 
+  createConnection(req.query.endpoint)
+
+    getBalance(req.params.id).then((bal)=>{
+       res.json({"status": "success","balance":bal,"tokens": tokens})
+ 
+   }).catch((err)=>{
+     console.log(err)
+      res.json({"status": "error","msg":err.message})
+   })
+ 
+     
+    
+ })
+
 
 
 
