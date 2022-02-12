@@ -27,6 +27,7 @@ const keyRoute=require('./routes/Key');
 const balanceRoute=require('./routes/Balance');
 const usersRoute=require('./routes/Users');
 const txnRoute=require('./routes/Transactions');
+const pushRoute=require('./routes/Push');
 
 
 // PORT 
@@ -37,6 +38,7 @@ app.use("/api/",keyRoute)
 app.use("/api/",balanceRoute)
 app.use("/api/",usersRoute)
 app.use("/api/",txnRoute)
+app.use("/api/",pushRoute)
 
 app.get('/',(req, res) => {
 
