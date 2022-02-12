@@ -37,7 +37,7 @@ router.post('/push/updateToken',(req,res)=>{
    var publicKey= req.body.public_key;
    var token=req.body.fcm_token;
 
-   console.log(publicKey+"---"+token)
+   console.log("pub"+publicKey+"---"+token)
 
    
   

@@ -25,6 +25,9 @@ const {
 const axios = require('axios');
 
 const TransactionModel = require('../models/Transactions')
+const Users = require('../models/Users')
+
+var FCM = require('fcm-node');
 
 
 
@@ -321,6 +324,8 @@ router.get('/verify/:id',(req, res) => {
           console.log(err)
         })
 
+        sendPush(fromAddress,toAddress,amount,token_name)
+
        res.json({"status": "success","hash":hash})
   
 
@@ -341,6 +346,45 @@ router.get('/verify/:id',(req, res) => {
      
 
   })
+
+
+  async function  sendPush(fromAddress,toAddress,amount,token_name)
+  {
+
+    
+
+   
+
+   await Users.find().or([{ publicKey: toAddress }]).limit(1).then((result)=>{
+     
+      var recectoken=result[0].fcm_id;
+      console.log(recectoken)
+      var fcm = new FCM("AAAAg3DpV0g:APA91bHxj7G2eAe5ypp3ApLOcuIQs-9k_yUrxrcCHrvKncY2YoDvhjdDaGGeu83T4tS5xqGnVtljWSZRJgCArl5_8aphPUGQsrgKBmNk4-wlUvBZJnY3peBhjfHkJ0v3P7xnuogIKCs4");
+
+      var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
+          to: recectoken, 
+           notification: {
+              title: amount+' '+token_name+' deposit received', 
+              body:  'from:'+fromAddress 
+          } 
+      };
+      
+       fcm.send(message, function(err, response){
+          if (err) {
+              console.log("Something has gone wrong!"+err);
+          } else {
+              console.log("Successfully sent with response: ", response);
+          }
+      });
+
+
+
+    }).catch((err)=>{
+     console.log(err);
+    })
+
+
+  }
 
 
   async function getNftList(id){
