@@ -32,7 +32,7 @@ const pushRoute=require('./routes/Push');
 
 // PORT 
 const PORT= process.env.PORT || 5000
-app.listen(PORT,() => console.log("Listening "+PORT))
+app.listen(PORT,"0.0.0.0",() => console.log("Listening "+PORT))
 
 app.use("/api/",keyRoute)
 app.use("/api/",balanceRoute)

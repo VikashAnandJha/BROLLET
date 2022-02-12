@@ -21,7 +21,13 @@ async function updateToken(id,token)
     const update = { fcm_id: token };
     
     // `doc` is the document _before_ `update` was applied
-    let doc = await Users.findOneAndUpdate(filter, update);
+   // let doc =   Users.findOneAndUpdate(filter, update);
+
+   let query = { /* query */ }; 
+   let options = {upsert: true, new: true, setDefaultsOnInsert: true};
+   let model = await Users.findOneAndUpdate(filter, update, options);
+
+   
 
 
 }
@@ -31,12 +37,14 @@ router.post('/push/updateToken',(req,res)=>{
    var publicKey= req.body.public_key;
    var token=req.body.fcm_token;
 
+   console.log(publicKey+"---"+token)
+
    
   
    updateToken(publicKey,token).then((result)=>{
-       res.json(result)
+       res.json({"success":true})
    }).catch((err)=>{
-    res.json(err)
+    res.json({"success":false})
    });
 
     //console.log(req.body.public_key);
@@ -45,28 +53,7 @@ router.post('/push/updateToken',(req,res)=>{
 
   router.post('/push/send',(req,res)=>{
 
-    var fcm = new FCM("AAAAg3DpV0g:APA91bHxj7G2eAe5ypp3ApLOcuIQs-9k_yUrxrcCHrvKncY2YoDvhjdDaGGeu83T4tS5xqGnVtljWSZRJgCArl5_8aphPUGQsrgKBmNk4-wlUvBZJnY3peBhjfHkJ0v3P7xnuogIKCs4");
 
-    var message = { //this may vary according to the message type (single recipient, multicast, topic, et cetera)
-        to: 'f9kvor6eTti6r3NSEsB7Xz:APA91bGkeBtc7obw3gUPiNQsd6P3OVCColH3fACHze3f4cfqVzK4xjHRUdjrAnTOCXyYDgHAff9PH0-os3YQAxboUnR9a8iIhEgJLmoNlm7rT3-6-8CAYfdODYa_UwvI0v4lMlwW4wNe', 
-         notification: {
-            title: 'Title of your push notification', 
-            body: 'Body of your push notification' 
-        },
-        
-        data: {  //you can send only notification or only data(or include both)
-            my_key: 'my value',
-            my_another_key: 'my another value'
-        }
-    };
-    
-    fcm.send(message, function(err, response){
-        if (err) {
-            console.log("Something has gone wrong!");
-        } else {
-            console.log("Successfully sent with response: ", response);
-        }
-    });
      //console.log(req.body.public_key);
      
    })
