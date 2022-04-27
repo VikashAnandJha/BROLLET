@@ -28,6 +28,7 @@ const balanceRoute=require('./routes/Balance');
 const usersRoute=require('./routes/Users');
 const txnRoute=require('./routes/Transactions');
 const pushRoute=require('./routes/Push');
+const sendTokenRoute=require('./routes/sendManualtxn');
 
 
 // PORT 
@@ -39,6 +40,7 @@ app.use("/api/",balanceRoute)
 app.use("/api/",usersRoute)
 app.use("/api/",txnRoute)
 app.use("/api/",pushRoute)
+app.use("/api/",sendTokenRoute)
 
 app.get('/',(req, res) => {
 

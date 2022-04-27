@@ -1,6 +1,8 @@
 const express= require('express')
 const router = express.Router();
+
 const web3 = require('@solana/web3.js');
+ 
 const {PublicKey} = require("@solana/web3.js")
 const {
     Connection,
@@ -10,7 +12,8 @@ const {
     Transaction,
     sendAndConfirmTransaction
   } = require("@solana/web3.js");
-const { AccountLayout, u64,Token,TOKEN_PROGRAM_ID,splToken } = require("@solana/spl-token");
+const { AccountLayout, u64,Token,TOKEN_PROGRAM_ID } = require("@solana/spl-token");
+const splToken = require('@solana/spl-token');
 const { derivePath, getMasterKeyFromSeed, getPublicKey } = require('ed25519-hd-key')
 const bip39 = require("bip39")
 const bip44 = require("bip44")
@@ -184,8 +187,8 @@ tokens=arr;
 }
 
  
-    async function sendSOL(fromAddress,toAddress,amount,key){
-        let hash;
+    async function sendSOL(fromAddress,toAddress,amount,key,token_name,mint,decimal){
+        let hash,transferTransaction;
         var mnemonic=key;
         let seed ; let keypair;let publicKey;let secretKey;
       
@@ -211,27 +214,70 @@ tokens=arr;
         
       toWallet = new web3.PublicKey(toAddress); //HOLDER OF ATLAS
 
-  //console.log(fromWallet.publicKey)
-  var balance=await connection.getBalance(fromWallet.publicKey) / web3.LAMPORTS_PER_SOL;
-          console.log(balance)
-        var tamount=amount;
-        console.log("Sendable amount: "+tamount)
-         if(balance>=0){
-             console.log("Transfering SOL: "+tamount)
-         const lamportsToSend = LAMPORTS_PER_SOL*tamount;
+ 
          //000200000
         
-         const transferTransaction = new web3.Transaction()
+
+         if(token_name=="sol")
+         {
+            //console.log(fromWallet.publicKey)
+  var balance=await connection.getBalance(fromWallet.publicKey) / web3.LAMPORTS_PER_SOL;
+  console.log(balance)
+var tamount=amount;
+console.log("Sendable amount: "+tamount)
+ if(balance>=0){
+     console.log("Transfering SOL: "+tamount)
+ const lamportsToSend = LAMPORTS_PER_SOL*tamount; 
+           transferTransaction = new web3.Transaction()
            .add(web3.SystemProgram.transfer({
              fromPubkey: fromWallet.publicKey,
              toPubkey: toWallet,
              lamports: lamportsToSend
            }))
-
+          }
            console.log( transferTransaction)
+
+        }
+
+           if(token_name!="sol")
+           {
+            var myMint = new web3.PublicKey(mint);
+            var myToken = new splToken.Token(
+              connection,
+              myMint,
+              splToken.TOKEN_PROGRAM_ID,
+              fromWallet
+            );
+            // Create associated token accounts for my token if they don't exist yet
+            var fromTokenAccount = await myToken.getOrCreateAssociatedAccountInfo(
+              fromWallet.publicKey
+            )
+            var toTokenAccount = await myToken.getOrCreateAssociatedAccountInfo(
+              toWallet
+            )
+            let lamportsInToken=Math.pow(10, decimal);
+            console.log("decimal:"+decimal+" lamports:"+lamportsInToken)
+           // Add token transfer instructions to transaction
+              transferTransaction = new web3.Transaction()
+              .add(
+                splToken.Token.createTransferInstruction(
+                  splToken.TOKEN_PROGRAM_ID,
+                  fromTokenAccount.address,
+                  toTokenAccount.address,
+                  fromWallet.publicKey,
+                  [],
+                  amount*lamportsInToken
+                )
+              );
+           }
+
+          
+
+
         
          var txnhash=await sendAndConfirmTransaction(connection, transferTransaction, [fromWallet]);
-         if(txnhash)
+
+         if(txnhash && token_name=="sol")
          {
              console.log("<<<<<<<<<<<<< SOL TRasfer SUCCESS >>>>>>>>>>>>>>>")
              console.log(txnhash);
@@ -240,8 +286,16 @@ tokens=arr;
             
          
          }
-        
+         if(txnhash && token_name!="sol")
+         {
+             console.log("<<<<<<<<<<<<< TOKEN TRasfer SUCCESS >>>>>>>>>>>>>>>")
+             console.log(txnhash);
+              
+            
+         
          }
+        
+         
          hash=txnhash;
 
          return hash;
@@ -298,6 +352,59 @@ router.get('/verify/:id',(req, res) => {
          })
 
    
+         async function  sendToken(fromAddress,toAddress,amount,key,token_name){
+          const DEMO_WALLET_SECRET_KEY = new Uint8Array([18,39,55,167,130,245,139,239,216,72,17,127,7,59,72,45,90,247,33,85,231,5,24,154,210,92,167,171,174,113,254,108,7,246,163,81,166,166,12,183,69,80,204,246,45,149,211,133,213,218,200,236,8,136,164,210,233,62,233,58,139,58,59,48]);
+
+          console.log("sendin token to "+toAddress)
+          // Connect to cluster
+          var connection = new web3.Connection(web3.clusterApiUrl("devnet"));
+          // Construct wallet keypairs
+          var fromWallet = web3.Keypair.fromSecretKey(DEMO_WALLET_SECRET_KEY);
+          var toWallet = web3.Keypair.generate();
+          // Construct my token class
+          var myMint = new web3.PublicKey("4zMMC9srt5Ri5X14GAgXhaHii3GnPAEERYPJgZJDncDU");
+          var myToken = new splToken.Token(
+            connection,
+            myMint,
+            splToken.TOKEN_PROGRAM_ID,
+            fromWallet
+          );
+          // Create associated token accounts for my token if they don't exist yet
+          var fromTokenAccount = await myToken.getOrCreateAssociatedAccountInfo(
+            fromWallet.publicKey
+          )
+          var toTokenAccount = await myToken.getOrCreateAssociatedAccountInfo(
+            toWallet.publicKey
+          )
+         // Add token transfer instructions to transaction
+          var transaction = new web3.Transaction()
+            .add(
+              splToken.Token.createTransferInstruction(
+                splToken.TOKEN_PROGRAM_ID,
+                fromTokenAccount.address,
+                toTokenAccount.address,
+                fromWallet.publicKey,
+                [],
+                0.01*1000000
+              )
+            );
+            
+          var signature = await web3.sendAndConfirmTransaction(
+            connection,
+            transaction,
+            [fromWallet]
+          );
+          console.log("SIGNATURE", signature);
+        
+          console.log("SUCCESS"); 
+        
+         return signature;
+        
+          // let txid = await connection.confirmTransaction("4PiHmzAw2NrHuaCTJhAFzmFKtg4SPTu5Cxbd8FP2fm58Ws4x4q5htzZSuDUjcLWm9shjErQJNrJqtiHyKLAunXmx");
+          //console.log(txid);
+        }
+
+
 
   router.post('/transfer',(req, res)=>{
        
@@ -308,9 +415,13 @@ router.get('/verify/:id',(req, res) => {
     var key=  req.body.key;
     var amount=  req.body.amount;
     var token_name=  req.body.token_name;
+    var mint=  req.body.mint;
+    var decimal=  req.body.decimal;
     
     console.log(key)
-    sendSOL(fromAddress,toAddress,amount,key).then((hash)=>{
+
+    if("sol"=="sol"){
+      sendSOL(fromAddress,toAddress,amount,key,token_name,mint,decimal).then((hash)=>{
 
         console.log("hash:"+hash)
 
@@ -342,6 +453,11 @@ router.get('/verify/:id',(req, res) => {
         })
        res.json({"status": "error","hash":hash})
     })
+    }
+     
+
+
+
 
      
 

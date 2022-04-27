@@ -25,6 +25,7 @@
     "ed25519-hd-key": "^1.2.0",
     "express": "^4.17.2",
     "fcm-node": "^1.6.1",
-    "mongoose": "^6.2.1"
+    "mongoose": "^6.2.1",
+    "tweetnacl": "^1.0.3"
   }
 }
